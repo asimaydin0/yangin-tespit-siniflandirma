@@ -8,12 +8,12 @@ import seaborn as sns
 import numpy as np
 from sklearn.metrics import confusion_matrix, classification_report
 
-# Define dataset paths
+# veri setlerinin konumları
 train_dir = "split_dataset/train"
 val_dir = "split_dataset/val"
 test_dir = "split_dataset/test"
 
-# Data preprocessing and augmentation (only for train/val)
+# Veri ön işleme ve augmentasyon işlemleri
 train_datagen = ImageDataGenerator(
     rescale=1.0 / 255.0,
     shear_range=0.2,
@@ -65,25 +65,25 @@ model = Sequential([
     Dense(1, activation='sigmoid')  # Binary sınıflandırma için sigmoid
 ])
 
-# Compile the model
+# Modeli derleme işlemi
 model.compile(optimizer=Adam(learning_rate=0.001),
               loss='binary_crossentropy',
               metrics=['accuracy'])
 
-# Train the model
+# modeli eğitme işlemi
 epochs = 10
 history = model.fit(train_generator, validation_data=val_generator, epochs=epochs)
 
-# Save the model
+# modeli kaydetme işlemi
 model.save("fire_detection_model.h5")
 
 print("Model training completed and saved!")
 
 # ---------------------------------------
-# EVALUATE ON TEST DATA & CONFUSION MATRIX
+# test verisi ile modelin değerlendirilmesi
 # ---------------------------------------
 
-# Get true labels and predictions
+# Doğru etiketleri ve tahmin edilen etiketleri alma
 true_labels = test_generator.classes
 pred_probs = model.predict(test_generator)
 pred_labels = (pred_probs > 0.5).astype(int).flatten()  # Convert probabilities to binary
@@ -91,7 +91,7 @@ pred_labels = (pred_probs > 0.5).astype(int).flatten()  # Convert probabilities 
 # Confusion Matrix
 conf_matrix = confusion_matrix(true_labels, pred_labels)
 
-# Plot confusion matrix
+# Confsion matrix'i görselleştirme
 plt.figure(figsize=(6, 5))
 sns.heatmap(conf_matrix, annot=True, fmt="d", cmap="Blues", xticklabels=["Non-Fire", "Fire"], yticklabels=["Non-Fire", "Fire"])
 plt.xlabel("Predicted")
@@ -99,6 +99,6 @@ plt.ylabel("Actual")
 plt.title("Confusion Matrix")
 plt.show()
 
-# Print Classification Report
+# Sınıflandırma raporu hesaplama
 print("\nClassification Report:\n")
 print(classification_report(true_labels, pred_labels, target_names=["Non-Fire", "Fire"]))
