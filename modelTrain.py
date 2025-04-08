@@ -86,7 +86,7 @@ print("Model training completed and saved!")
 # Doğru etiketleri ve tahmin edilen etiketleri alma
 true_labels = test_generator.classes
 pred_probs = model.predict(test_generator)
-pred_labels = (pred_probs > 0.5).astype(int).flatten()  # Convert probabilities to binary
+pred_labels = (pred_probs > 0.5).astype(int).flatten()  # 0.5 eşik değeri kullanarak sınıflandırma
 
 # Confusion Matrix
 conf_matrix = confusion_matrix(true_labels, pred_labels)
@@ -99,6 +99,6 @@ plt.ylabel("Actual")
 plt.title("Confusion Matrix")
 plt.show()
 
-# Sınıflandırma raporu hesaplama
+# Sınıflandırma raporu
 print("\nClassification Report:\n")
 print(classification_report(true_labels, pred_labels, target_names=["Non-Fire", "Fire"]))

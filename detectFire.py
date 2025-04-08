@@ -4,20 +4,21 @@ import cv2
 from tensorflow.keras.preprocessing import image # type: ignore
 import matplotlib.pyplot as plt
 
-# Load trained model
+# Eğitilmiş modeli yükle
 model = tf.keras.models.load_model("fire_detection_model.h5")
 
-# Define class labels
+# Sınıf etiketleri tanımları
+# 1: Non-Fire, 0: Fire
 class_labels = ["Fire", "Non-Fire"]
 
 def predict_fire(image_path):
-    # Load image and preprocess
+    # Resmi yükle ve ön işleme tabi tut
     img = image.load_img(image_path, target_size=(128, 128))  # Resize to match model input
     img_array = image.img_to_array(img)  # Convert to array
     img_array = np.expand_dims(img_array, axis=0)  # Expand dimensions for batch
     img_array /= 255.0  # Normalize
     
-    # Make prediction
+    # Tahmin yapma işlemi   
     prediction = model.predict(img_array)
     predicted_class = int(prediction[0][0] > 0.5)  # 0: Non-Fire, 1: Fire
     confidence = prediction[0][0]

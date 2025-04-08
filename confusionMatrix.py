@@ -5,13 +5,13 @@ import seaborn as sns
 from tensorflow.keras.preprocessing.image import ImageDataGenerator # type: ignore
 from sklearn.metrics import confusion_matrix, classification_report
 
-# Load trained model
+# Eğitilmiş modeli yükle
 model = tf.keras.models.load_model("fire_detection_model.h5")
 
-# Define dataset path for testing
+# Veri setlerinin konumları
 test_dir = "split_dataset/test"
 
-# Data generator for test set (no augmentation, only rescaling)
+# Veri ön işleme işlemleri
 test_datagen = ImageDataGenerator(rescale=1.0/255)
 
 test_generator = test_datagen.flow_from_directory(
@@ -19,20 +19,20 @@ test_generator = test_datagen.flow_from_directory(
     target_size=(128, 128),
     batch_size=32,
     class_mode='binary',
-    shuffle=False  # Important! Prevent shuffling for correct label order
+    shuffle=False  # karmaşıklık matrisinde sıralama bozulmaması için
 )
 
-# Get true labels
+# Gerçek etiketleri al
 true_labels = test_generator.classes
 
-# Get model predictions (probabilities)
+# Model ile tahmin yapma işlemi
 pred_probs = model.predict(test_generator)
-pred_labels = (pred_probs > 0.5).astype(int).flatten()  # Convert probabilities to binary labels
+pred_labels = (pred_probs > 0.5).astype(int).flatten()  # Olasılıkları ikili sınıflara dönüştür
 
-# Create confusion matrix
+# Karmaşıklık matrisini oluşturma işlemi
 conf_matrix = confusion_matrix(true_labels, pred_labels)
 
-# Plot the confusion matrix
+# Karmaşıklık matrisini görselleştirme işlemi
 plt.figure(figsize=(6, 5))
 sns.heatmap(conf_matrix, annot=True, fmt="d", cmap="Blues", xticklabels=["Non-Fire", "Fire"], yticklabels=["Non-Fire", "Fire"])
 plt.xlabel("Predicted")
